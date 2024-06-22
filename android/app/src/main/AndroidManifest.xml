@@ -1,10 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doctor_appointment_app">
    <application
-        android:label="doctor_appointment_app"
+        android:label="Take care of your health"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
         <activity
             android:showWhenLocked="true"
             android:turnScreenOn="true"

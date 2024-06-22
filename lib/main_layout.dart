@@ -20,6 +20,7 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: _page,
         onPageChanged: ((value) {
           setState(() {
@@ -35,7 +36,7 @@ class _MainLayoutState extends State<MainLayout> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPage,
-        type:   BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,
         onTap: (page) {
           setState(() {
             currentPage = page;

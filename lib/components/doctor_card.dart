@@ -54,27 +54,27 @@ class DoctorCard extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
+                          const Icon(
                             Icons.star_border,
                             color: Colors.yellow,
                             size: 16,
                           ),
-                          Spacer(
+                          const Spacer(
                             flex: 1,
                           ),
-                          Text('4.5'),
-                          Spacer(
+                          const Text('4.5'),
+                          const Spacer(
                             flex: 1,
                           ),
-                          Text('Reviews'),
-                          Spacer(
+                          const Text('Reviews'),
+                          const Spacer(
                             flex: 1,
                           ),
-                          Text('(20)'),
-                          Spacer(
+                          Text('(${doctor['patients']})'),
+                          const Spacer(
                             flex: 7,
                           ),
                         ],
@@ -88,11 +88,14 @@ class DoctorCard extends StatelessWidget {
         ),
         onTap: () {
           //pass the details to detail page
-          MyApp.navigatorKey.currentState!.push(MaterialPageRoute(
+          MyApp.navigatorKey.currentState!.push(
+            MaterialPageRoute(
               builder: (_) => DoctorDetails(
-                    doctor: doctor,
-                    isFav: isFav,
-                  )));
+                doctor: doctor,
+                isFav: isFav,
+              ),
+            ),
+          );
         },
       ),
     );

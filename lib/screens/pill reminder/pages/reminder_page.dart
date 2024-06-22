@@ -7,7 +7,6 @@ import 'package:doctor_appointment_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:provider/provider.dart';
 
 class PillReminderPage extends StatelessWidget {
@@ -15,47 +14,51 @@ class PillReminderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
+    return SafeArea(
+      child: Padding(
         padding: EdgeInsets.all(2.h),
-        child: Column(
+        child: Stack(
           children: [
             const TopContainer(),
             SizedBox(
               height: 2.h,
             ),
             //the widget take space as per need
-            const Flexible(
-              child: BottomContainer(),
+            const BottomContainer(),
+
+            GestureDetector(
+              onTap: () {
+                // go to new entry page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NewEntryPage(),
+                  ),
+                );
+              },
+              child: Container(
+                alignment: Alignment.bottomRight,
+                margin: EdgeInsets.only(bottom: 25.h, right: 22.h),
+                child: FittedBox(
+                  child: SizedBox(
+                    // width: 38.w,
+                    // height: 20.h,
+                    child: Card(
+                      color: Config.primaryColor,
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(17.h),
+                      ),
+                      child: Icon(
+                        Icons.add_outlined,
+                        color: kScaffoldColor,
+                        size: 50.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
-        ),
-      ),
-      floatingActionButton: InkResponse(
-        onTap: () {
-          // go to new entry page
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const NewEntryPage(),
-            ),
-          );
-        },
-        child: SizedBox(
-          width: 18.w,
-          height: 9.h,
-          child: Card(
-            color: Config.primaryColor,
-            shape: BeveledRectangleBorder(
-              borderRadius: BorderRadius.circular(3.h),
-            ),
-            child: Icon(
-              Icons.add_outlined,
-              color: kScaffoldColor,
-              size: 50.sp,
-            ),
-          ),
         ),
       ),
     );
@@ -79,7 +82,7 @@ class TopContainer extends StatelessWidget {
           child: Text(
             'Worry less. \nLive healthier.',
             textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         ),
         Container(
@@ -87,7 +90,7 @@ class TopContainer extends StatelessWidget {
           padding: EdgeInsets.only(bottom: 1.h),
           child: Text(
             'Welcome to Daily Dose.',
-            style: Theme.of(context).textTheme.subtitle2,
+            style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
         SizedBox(
@@ -102,7 +105,7 @@ class TopContainer extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 1.h),
                 child: Text(
                   !snapshot.hasData ? '0' : snapshot.data!.length.toString(),
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               );
             }),
@@ -136,12 +139,12 @@ class BottomContainer extends StatelessWidget {
           return Center(
             child: Text(
               'No Medicine',
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
           );
         } else {
           return GridView.builder(
-            padding: EdgeInsets.only(top: 1.h),
+            padding: EdgeInsets.only(top: 150.h),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
@@ -172,8 +175,11 @@ class MedicineCard extends StatelessWidget {
         tag: medicine.medicineName! + medicine.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/bottle.svg',
-          color: kOtherColor,
-          height: 7.h,
+          colorFilter: const ColorFilter.mode(
+            kOtherColor,
+            BlendMode.srcIn,
+          ),
+          height: 33.h,
         ),
       );
     } else if (medicine.medicineType == 'Pill') {
@@ -185,7 +191,7 @@ class MedicineCard extends StatelessWidget {
             kOtherColor,
             BlendMode.srcIn,
           ),
-          height: 7.h,
+          height: 33.h,
         ),
       );
     } else if (medicine.medicineType == 'Syringe') {
@@ -197,7 +203,7 @@ class MedicineCard extends StatelessWidget {
             kOtherColor,
             BlendMode.srcIn,
           ),
-          height: 7.h,
+          height: 33.h,
         ),
       );
     } else if (medicine.medicineType == 'Tablet') {
@@ -205,11 +211,11 @@ class MedicineCard extends StatelessWidget {
         tag: medicine.medicineName! + medicine.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/tablet.svg',
-        colorFilter: const ColorFilter.mode(
+          colorFilter: const ColorFilter.mode(
             kOtherColor,
             BlendMode.srcIn,
           ),
-          height: 7.h,
+          height: 33.h,
         ),
       );
     }
@@ -251,44 +257,57 @@ class MedicineCard extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 1.h, bottom: 1.h),
-        margin: EdgeInsets.all(1.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(2.h),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(),
-            //call the function here icon type
-            //later we will the icon issue
-            makeIcon(7.h),
-            const Spacer(),
-            //hero tag animation, later
-            Hero(
-              tag: medicine.medicineName!,
-              child: Text(
-                medicine.medicineName!,
+        padding:
+            EdgeInsets.only(left: 13.w, bottom: 15.h, top: 17.h, right: 18.w),
+        child: Container(
+          padding:
+              EdgeInsets.only(left: 6.w, right: 2.w, top: 1.h, bottom: 3.h),
+          // margin: EdgeInsets.only(top: 70.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5.h),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(),
+              //call the function here icon type
+              //later we will the icon issue
+              makeIcon(20.h),
+              const Spacer(),
+              //hero tag animation, later
+              Hero(
+                tag: medicine.medicineName!,
+                child: Text(
+                  medicine.medicineName!,
+                  overflow: TextOverflow.fade,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              SizedBox(
+                height: 0.3.h,
+              ),
+              //time interval data with condition, later
+              Text(
+                medicine.interval == 1
+                    ? "Every ${medicine.interval} hour"
+                    : "Every ${medicine.interval} hour",
                 overflow: TextOverflow.fade,
                 textAlign: TextAlign.start,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-            ),
-            SizedBox(
-              height: 0.3.h,
-            ),
-            //time interval data with condition, later
-            Text(
-              medicine.interval == 1
-                  ? "Every ${medicine.interval} hour"
-                  : "Every ${medicine.interval} hour",
-              overflow: TextOverflow.fade,
-              textAlign: TextAlign.start,
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

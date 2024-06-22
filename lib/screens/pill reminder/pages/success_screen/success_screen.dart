@@ -10,13 +10,19 @@ class SuccessScreen extends StatefulWidget {
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
+  Timer? timer;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Timer(const Duration(milliseconds: 2500), () {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
+    timer = Timer(const Duration(milliseconds: 2500), () {
+      Navigator.popUntil(context, ModalRoute.withName('main'));
     });
+  }
+
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
   }
 
   @override
@@ -25,7 +31,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       color: Colors.white,
       child: Center(
         child: FlareActor(
-          'assets/animations/Success Check.flr',
+          'assets/animations/success_check.flr',
           alignment: Alignment.center,
           fit: BoxFit.contain,
           animation: 'Untitiled',

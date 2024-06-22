@@ -31,7 +31,9 @@ class _DoctorDetailsState extends State<DoctorDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+  
+    Scaffold(
       appBar: CustomAppBar(
         appTitle: 'Doctor Details',
         icon: const FaIcon(Icons.arrow_back_ios),
@@ -104,6 +106,7 @@ class _DoctorDetailsState extends State<DoctorDetails> {
         ),
       ),
     );
+  
   }
 }
 
@@ -115,7 +118,7 @@ class AboutDoctor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Config().init(context);
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Column(
         children: <Widget>[

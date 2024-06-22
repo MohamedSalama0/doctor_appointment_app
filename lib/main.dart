@@ -3,6 +3,7 @@ import 'package:doctor_appointment_app/main_layout.dart';
 import 'package:doctor_appointment_app/models/auth_model.dart';
 import 'package:doctor_appointment_app/screens/auth_page.dart';
 import 'package:doctor_appointment_app/screens/booking_page.dart';
+import 'package:doctor_appointment_app/screens/categories/category_page.dart';
 import 'package:doctor_appointment_app/screens/success_booked.dart';
 import 'package:doctor_appointment_app/utils/config.dart';
 import 'package:doctor_appointment_app/utils/constants.dart';
@@ -11,13 +12,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-//  handle in terminated state
+tz.initializeTimeZones();//  handle in terminated state
   var initialNotification =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   if (initialNotification?.didNotificationLaunchApp == true) {
@@ -62,40 +62,61 @@ class _MyAppState extends State<MyApp> {
           create: (context) => GlobalBloc(),
         )
       ],
-      child:  
-        ScreenUtilInit(
-          child: MaterialApp(
-            navigatorKey: MyApp.navigatorKey,
-            title: 'Medics App',
-            debugShowCheckedModeBanner: false,
-            // theme: ThemeData(
-            //   //pre-define input decoration
-            //   inputDecorationTheme: const InputDecorationTheme(
-            //     focusColor: Config.primaryColor,
-            //     border: Config.outlinedBorder,
-            //     focusedBorder: Config.focusBorder,
-            //     errorBorder: Config.errorBorder,
-            //     enabledBorder: Config.outlinedBorder,
-            //     floatingLabelStyle: TextStyle(color: Config.primaryColor),
-            //     prefixIconColor: Colors.black38,
-            //   ),
-            //   scaffoldBackgroundColor: Colors.white,
-            //   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            //     backgroundColor: Config.primaryColor,
-            //     selectedItemColor: Colors.white,
-            //     showSelectedLabels: true,
-            //     showUnselectedLabels: false,
-            //     unselectedItemColor: Colors.grey.shade700,
-            //     elevation: 10,
-            //     type: BottomNavigationBarType.fixed,
-            //   ),
-            // ),
-            theme: ThemeData.dark().copyWith(
-            primaryColor: kPrimaryColor,
+      child: ScreenUtilInit(
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) => MaterialApp(
+          navigatorKey: MyApp.navigatorKey,
+          title: 'Medics App',
+          debugShowCheckedModeBanner: false,
+          // theme: ThemeData(
+          //   //pre-define input decoration
+          //   inputDecorationTheme: const InputDecorationTheme(
+          //     focusColor: Config.primaryColor,
+          //     border: Config.outlinedBorder,
+          //     focusedBorder: Config.focusBorder,
+          //     errorBorder: Config.errorBorder,
+          //     enabledBorder: Config.outlinedBorder,
+          //     floatingLabelStyle: TextStyle(color: Config.primaryColor),
+          //     prefixIconColor: Colors.black38,
+          //   ),
+          //   scaffoldBackgroundColor: Colors.white,
+          //   bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          //     backgroundColor: Config.primaryColor,
+          //     selectedItemColor: Colors.white,
+          //     showSelectedLabels: true,
+          //     showUnselectedLabels: false,
+          //     unselectedItemColor: Colors.grey.shade700,
+          //     elevation: 10,
+          //     type: BottomNavigationBarType.fixed,
+          //   ),
+          // ),
+          theme: ThemeData.dark().copyWith(
+            inputDecorationTheme: const InputDecorationTheme(
+              focusColor: Config.primaryColor,
+              border: Config.outlinedBorder,
+              focusedBorder: Config.focusBorder,
+              errorBorder: Config.errorBorder,
+              enabledBorder: Config.outlinedBorder,
+              floatingLabelStyle: TextStyle(color: Config.primaryColor),
+              prefixIconColor: Colors.black38,
+            ),
             scaffoldBackgroundColor: kScaffoldColor,
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              backgroundColor: Config.primaryColor,
+              selectedItemColor: Colors.white,
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              unselectedItemColor: Colors.grey.shade500,
+              elevation: 10,
+              type: BottomNavigationBarType.fixed,
+            ),
+            primaryColor: kPrimaryColor,
+            // scaffoldBackgroundColor: kScaffoldColor,
             //appbar theme
+
             appBarTheme: AppBarTheme(
-              toolbarHeight: 7.h,
+              toolbarHeight: 40.h,
               backgroundColor: kScaffoldColor,
               elevation: 0,
               iconTheme: IconThemeData(
@@ -109,6 +130,7 @@ class _MyAppState extends State<MyApp> {
                 fontSize: 16.sp,
               ),
             ),
+
             textTheme: TextTheme(
               displaySmall: TextStyle(
                 fontSize: 28.sp,
@@ -134,39 +156,44 @@ class _MyAppState extends State<MyApp> {
               titleMedium:
                   GoogleFonts.poppins(fontSize: 15.sp, color: kPrimaryColor),
               titleSmall:
-                  GoogleFonts.poppins(fontSize: 12.sp, color: kTextLightColor),
+                  GoogleFonts.poppins(fontSize: 13.sp, color: kTextColor),
               bodySmall: GoogleFonts.poppins(
-                fontSize: 9.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
-                color: kTextLightColor,
+                color: kTextColor,
+              ),
+              bodyMedium: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: kTextColor,
               ),
               labelMedium: TextStyle(
-                fontSize: 10.sp,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
                 color: kTextColor,
               ),
             ),
-            inputDecorationTheme: const InputDecorationTheme(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: kTextLightColor,
-                  width: 0.7,
-                ),
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: kTextLightColor),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: kPrimaryColor),
-              ),
-            ),
+            // inputDecorationTheme: const InputDecorationTheme(
+            //   enabledBorder: UnderlineInputBorder(
+            //     borderSide: BorderSide(
+            //       color: kTextLightColor,
+            //       width: 0.7,
+            //     ),
+            //   ),
+            //   border: UnderlineInputBorder(
+            //     borderSide: BorderSide(color: kTextLightColor),
+            //   ),
+            //   focusedBorder: UnderlineInputBorder(
+            //     borderSide: BorderSide(color: kPrimaryColor),
+            //   ),
+            // ),
             //lets customize the timePicker theme
             timePickerTheme: TimePickerThemeData(
               backgroundColor: kScaffoldColor,
               hourMinuteColor: kTextColor,
               hourMinuteTextColor: kScaffoldColor,
               dayPeriodColor: kTextColor,
-              dayPeriodTextColor: kScaffoldColor,
+              dayPeriodTextColor: kTextColor,
               dialBackgroundColor: kTextColor,
               dialHandColor: kPrimaryColor,
               dialTextColor: kScaffoldColor,
@@ -176,16 +203,16 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-            initialRoute: '/',
-            routes: {
-              '/': (context) => const AuthPage(),
-              'main': (context) => const MainLayout(),
-              'booking_page': (context) => BookingPage(),
-              'success_booking': (context) => const AppointmentBooked(),
-            },
-          ),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const AuthPage(),
+            'main': (context) => const MainLayout(),
+            'booking_page': (context) => BookingPage(),
+            '/category_page': (context) => const CategoryPage(),
+            'success_booking': (context) => const AppointmentBooked(),
+          },
         ),
-      
+      ),
     );
   }
 }

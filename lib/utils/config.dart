@@ -6,7 +6,7 @@ class Config {
   static double? screenWidth;
   static double? screenHeight;
 
-  static const Color primaryColor = Color.fromARGB(255, 27, 79, 146);
+  static const Color primaryColor = Color(0xFF399DB8);
 
   //width and height initialization
   void init(BuildContext context) {

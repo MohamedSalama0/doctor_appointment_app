@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:doctor_appointment_app/common/convert_time.dart';
 import 'package:doctor_appointment_app/global_bloc.dart';
 import 'package:doctor_appointment_app/models/errors.dart';
@@ -10,12 +11,10 @@ import 'package:doctor_appointment_app/screens/pill%20reminder/pages/success_scr
 import 'package:doctor_appointment_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sizer/sizer.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:provider/provider.dart';
-
+import 'package:timezone/timezone.dart' as tz;
 
 class NewEntryPage extends StatefulWidget {
   const NewEntryPage({Key? key}) : super(key: key);
@@ -63,7 +62,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
       body: Provider<NewEntryBloc>.value(
         value: _newEntryBloc,
         child: Padding(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -80,7 +79,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
                 ),
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle2!
+                    .titleSmall!
                     .copyWith(color: kOtherColor),
               ),
               const PanelTitle(
@@ -97,14 +96,14 @@ class _NewEntryPageState extends State<NewEntryPage> {
                 ),
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle2!
+                    .titleSmall!
                     .copyWith(color: kOtherColor),
               ),
-              SizedBox(
-                height: 2.h,
-              ),
+              SizedBox(height: 2.h),
               const PanelTitle(title: 'Medicine Type', isRequired: false),
-              Padding(
+              SizedBox(height: 4.h),
+              Container(
+                height: 120.h,
                 padding: EdgeInsets.only(top: 1.h),
                 child: StreamBuilder<MedicineType>(
                   //new entry block
@@ -149,102 +148,110 @@ class _NewEntryPageState extends State<NewEntryPage> {
               ),
               const PanelTitle(title: 'Interval Selection', isRequired: true),
               const IntervalSelection(),
+              SizedBox(height: 20.h),
               const PanelTitle(title: 'Starting Time', isRequired: true),
               const SelectTime(),
-              SizedBox(
-                height: 2.h,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 8.w,
-                  right: 8.w,
-                ),
-                child: SizedBox(
-                  width: 80.w,
-                  height: 8.h,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: kPrimaryColor,
-                      shape: const StadiumBorder(),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Confirm',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: kScaffoldColor,
-                            ),
+              SizedBox(height: 20.h),
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 8.w,
+                    right: 8.w,
+                  ),
+                  child: SizedBox(
+                    width: 100.w,
+                    height: 40.h,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: kPrimaryColor,
+                        shape: const StadiumBorder(),
                       ),
-                    ),
-                    onPressed: () {
-                      //add medicine
-                      //some validations
-                      //go to success screen
-                      String? medicineName;
-                      int? dosage;
+                      child: Center(
+                        child: Text(
+                          'Confirm',
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    color: kScaffoldColor,
+                                  ),
+                        ),
+                      ),
+                      onPressed: () async {
+                        //add medicine
+                        //some validations
+                        //go to success screen
+                        String? medicineName;
+                        int? dosage;
 
-                      //medicineName
-                      if (nameController.text == "") {
-                        _newEntryBloc.submitError(EntryError.nameNull);
-                        return;
-                      }
-                      if (nameController.text != "") {
-                        medicineName = nameController.text;
-                      }
-                      //dosage
-                      if (dosageController.text == "") {
-                        dosage = 0;
-                      }
-                      if (dosageController.text != "") {
-                        dosage = int.parse(dosageController.text);
-                      }
-                      for (var medicine in globalBloc.medicineList$!.value) {
-                        if (medicineName == medicine.medicineName) {
-                          _newEntryBloc.submitError(EntryError.nameDuplicate);
+                        //medicineName
+                        if (nameController.text == "") {
+                          _newEntryBloc.submitError(EntryError.nameNull);
                           return;
                         }
-                      }
-                      if (_newEntryBloc.selectIntervals!.value == 0) {
-                        _newEntryBloc.submitError(EntryError.interval);
-                        return;
-                      }
-                      if (_newEntryBloc.selectedTimeOfDay$!.value == 'None') {
-                        _newEntryBloc.submitError(EntryError.startTime);
-                        return;
-                      }
+                        if (nameController.text != "") {
+                          medicineName = nameController.text;
+                        }
+                        //dosage
+                        if (dosageController.text == "") {
+                          dosage = 0;
+                        }
+                        if (dosageController.text != "") {
+                          dosage = int.parse(dosageController.text);
+                        }
+                        for (var medicine in globalBloc.medicineList$!.value) {
+                          if (medicineName == medicine.medicineName) {
+                            _newEntryBloc.submitError(EntryError.nameDuplicate);
+                            return;
+                          }
+                        }
+                        if (_newEntryBloc.selectIntervals!.value == 0) {
+                          _newEntryBloc.submitError(EntryError.interval);
+                          return;
+                        }
+                        if (_newEntryBloc.selectedTimeOfDay$!.value == 'None') {
+                          _newEntryBloc.submitError(EntryError.startTime);
+                          return;
+                        }
 
-                      String medicineType = _newEntryBloc
-                          .selectedMedicineType!.value
-                          .toString()
-                          .substring(13);
+                        String medicineType = _newEntryBloc
+                            .selectedMedicineType!.value
+                            .toString()
+                            .substring(13);
 
-                      int interval = _newEntryBloc.selectIntervals!.value;
-                      String startTime =
-                          _newEntryBloc.selectedTimeOfDay$!.value;
+                        int interval = _newEntryBloc.selectIntervals!.value;
+                        String startTime =
+                            _newEntryBloc.selectedTimeOfDay$!.value;
 
-                      List<int> intIDs =
-                          makeIDs(24 / _newEntryBloc.selectIntervals!.value);
-                      List<String> notificationIDs =
-                          intIDs.map((i) => i.toString()).toList();
+                        List<int> intIDs =
+                            makeIDs(24 / _newEntryBloc.selectIntervals!.value);
+                        List<String> notificationIDs =
+                            intIDs.map((i) => i.toString()).toList();
 
-                      Medicine newEntryMedicine = Medicine(
+                        Medicine newEntryMedicine = Medicine(
                           notificationIDs: notificationIDs,
                           medicineName: medicineName,
                           dosage: dosage,
                           medicineType: medicineType,
                           interval: interval,
-                          startTime: startTime);
+                          startTime: startTime,
+                        );
 
-                      //update medicine list via global bloc
-                      globalBloc.updateMedicineList(newEntryMedicine);
+                        //update medicine list via global bloc
+                        print('before update medicine');
+                         globalBloc.updateMedicineList(newEntryMedicine);
+                
 
-                      //schedule notification
-                      scheduleNotification(newEntryMedicine);
+                        //schedule notification
+                        print('before schedule Notifi');
+                         scheduleNotification(newEntryMedicine);
+                        print('before schedule Notifi2');
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SuccessScreen()));
-                    },
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SuccessScreen()));
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -300,7 +307,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
 
   initializeNotifications() async {
     var initializationSettingsAndroid =
-        const AndroidInitializationSettings('@mipmap/launcher_icon');
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = const DarwinInitializationSettings();
     var initializationSettings = InitializationSettings(
@@ -342,15 +349,19 @@ class _NewEntryPageState extends State<NewEntryPage> {
       } else {
         hour = hour + (medicine.interval! * i);
       }
+      print('before zone');
       await flutterLocalNotificationsPlugin.zonedSchedule(
           int.parse(medicine.notificationIDs![i]),
           'Reminder: ${medicine.medicineName}',
           medicine.medicineType.toString() != MedicineType.None.toString()
               ? 'It is time to take your ${medicine.medicineType!.toLowerCase()}, according to schedule'
               : 'It is time to take your medicine, according to schedule',
-          tz.TZDateTime(tz.local, DateTime.now().year, DateTime.now().month,  DateTime.now().day, hour, minute, 0),
-          platformChannelSpecifics, 
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime);
+          tz.TZDateTime(tz.local, DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, hour, minute, 0),
+          platformChannelSpecifics,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
+      print('before zone2');
       hour = ogValue;
     }
   }
@@ -390,7 +401,7 @@ class _SelectTimeState extends State<SelectTime> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 8.h,
+      height: 47.h,
       child: Padding(
         padding: EdgeInsets.only(top: 2.h),
         child: TextButton(
@@ -406,7 +417,7 @@ class _SelectTimeState extends State<SelectTime> {
                   : "${convertTime(_time.hour.toString())}:${convertTime(_time.minute.toString())}",
               style: Theme.of(context)
                   .textTheme
-                  .subtitle2!
+                  .titleSmall!
                   .copyWith(color: kScaffoldColor),
             ),
           ),
@@ -432,55 +443,61 @@ class _IntervalSelectionState extends State<IntervalSelection> {
     return Padding(
       padding: EdgeInsets.only(top: 1.h),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
             'Remind me every',
-            style: Theme.of(context).textTheme.subtitle2!.copyWith(
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   color: kTextColor,
                 ),
           ),
-          DropdownButton(
-            iconEnabledColor: kOtherColor,
-            dropdownColor: kScaffoldColor,
-            itemHeight: 8.h,
-            hint: _selected == 0
-                ? Text(
-                    'Select an Interval',
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                          color: kPrimaryColor,
-                        ),
-                  )
-                : null,
-            elevation: 4,
-            value: _selected == 0 ? null : _selected,
-            items: _intervals.map(
-              (int value) {
-                return DropdownMenuItem<int>(
-                  value: value,
-                  child: Text(
-                    value.toString(),
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                          color: kSecondaryColor,
-                        ),
-                  ),
+          SizedBox(
+            width: 100.w,
+            child: DropdownButton(
+              iconEnabledColor: kOtherColor,
+              dropdownColor: kScaffoldColor,
+              isDense: true,
+              iconSize: 23.h,
+              itemHeight: 40.h,
+              isExpanded: true,
+              hint: _selected == 0
+                  ? Text(
+                      'Select an Interval',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: kPrimaryColor,
+                          ),
+                    )
+                  : null,
+              elevation: 4,
+              value: _selected == 0 ? null : _selected,
+              items: _intervals.map(
+                (int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(
+                      value.toString(),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: kSecondaryColor,
+                          ),
+                    ),
+                  );
+                },
+              ).toList(),
+              onChanged: (newVal) {
+                setState(
+                  () {
+                    _selected = newVal!;
+                    newEntryBloc.updateInterval(newVal);
+                  },
                 );
               },
-            ).toList(),
-            onChanged: (newVal) {
-              setState(
-                () {
-                  _selected = newVal!;
-                  newEntryBloc.updateInterval(newVal);
-                },
-              );
-            },
+            ),
           ),
           Text(
             _selected == 1 ? " hour" : " hours",
             style: Theme.of(context)
                 .textTheme
-                .subtitle2!
+                .titleSmall!
                 .copyWith(color: kTextColor),
           ),
         ],
@@ -513,30 +530,31 @@ class MedicineTypeColumn extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 20.w,
+            width: 40.w,
             alignment: Alignment.center,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(3.h),
                 color: isSelected ? kOtherColor : Colors.white),
             child: Center(
               child: Padding(
-                padding: EdgeInsets.only(
-                  top: 1.h,
-                  bottom: 1.h,
-                ),
+                padding: EdgeInsets.all(7.w),
                 child: SvgPicture.asset(
                   iconValue,
-                  height: 7.h,
-                  color: isSelected ? Colors.white : kOtherColor,
+                  height: 28.h,
+                  colorFilter: ColorFilter.mode(
+                    isSelected ? Colors.white : kOtherColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 1.h),
+            padding: EdgeInsets.only(top: 4.h),
             child: Container(
-              width: 20.w,
-              height: 4.h,
+              width: 70.w,
+              padding: const EdgeInsets.all(10),
+              height: 30.h,
               decoration: BoxDecoration(
                 color: isSelected ? kOtherColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
@@ -546,7 +564,7 @@ class MedicineTypeColumn extends StatelessWidget {
                   name,
                   style: Theme.of(context)
                       .textTheme
-                      .subtitle2!
+                      .titleSmall!
                       .copyWith(color: isSelected ? Colors.white : kOtherColor),
                 ),
               ),

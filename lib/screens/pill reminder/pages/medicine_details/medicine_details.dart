@@ -2,10 +2,9 @@ import 'package:doctor_appointment_app/global_bloc.dart';
 import 'package:doctor_appointment_app/models/medicine.dart';
 import 'package:doctor_appointment_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
 
 class MedicineDetails extends StatefulWidget {
   const MedicineDetails(this.medicine, {Key? key}) : super(key: key);
@@ -18,7 +17,7 @@ class MedicineDetails extends StatefulWidget {
 class _MedicineDetailsState extends State<MedicineDetails> {
   @override
   Widget build(BuildContext context) {
-    final GlobalBloc _globalBloc = Provider.of<GlobalBloc>(context);
+    final GlobalBloc globalBloc = Provider.of<GlobalBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Details'),
@@ -29,10 +28,10 @@ class _MedicineDetailsState extends State<MedicineDetails> {
           children: [
             MainSection(medicine: widget.medicine),
             ExtendedSection(medicine: widget.medicine),
-            Spacer(),
+            SizedBox(height: 40.h),
             SizedBox(
               width: 100.w,
-              height: 7.h,
+              height: 40.h,
               child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: kSecondaryColor,
@@ -41,13 +40,13 @@ class _MedicineDetailsState extends State<MedicineDetails> {
                 onPressed: () {
                   //open alert dialog box,+global bloc, later
                   //cool its working
-                  openAlertBox(context, _globalBloc);
+                  openAlertBox(context, globalBloc);
                 },
                 child: Text(
                   'Delete',
                   style: Theme.of(context)
                       .textTheme
-                      .subtitle1!
+                      .titleMedium!
                       .copyWith(color: kScaffoldColor),
                 ),
               ),
@@ -62,7 +61,7 @@ class _MedicineDetailsState extends State<MedicineDetails> {
   }
   //lets delete a medicine from memory
 
-  openAlertBox(BuildContext context, GlobalBloc _globalBloc) {
+  openAlertBox(BuildContext context, GlobalBloc globalBloc) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -78,7 +77,7 @@ class _MedicineDetailsState extends State<MedicineDetails> {
           title: Text(
             'Delete This Reminder?',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           actions: [
             TextButton(
@@ -87,20 +86,20 @@ class _MedicineDetailsState extends State<MedicineDetails> {
               },
               child: Text(
                 'Cancel',
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
             TextButton(
               onPressed: () {
                 //global block to delete medicine,later
-                _globalBloc.removeMedicine(widget.medicine);
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                globalBloc.removeMedicine(widget.medicine);
+                Navigator.popUntil(context, ModalRoute.withName('main'));
               },
               child: Text(
                 'OK',
                 style: Theme.of(context)
                     .textTheme
-                    .caption!
+                    .bodySmall!
                     .copyWith(color: kSecondaryColor),
               ),
             ),
@@ -120,8 +119,8 @@ class MainSection extends StatelessWidget {
         tag: medicine!.medicineName! + medicine!.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/bottle.svg',
-            colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
-          height: 7.h,
+          colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
+          height: 30.h,
         ),
       );
     } else if (medicine!.medicineType == 'Pill') {
@@ -129,8 +128,8 @@ class MainSection extends StatelessWidget {
         tag: medicine!.medicineName! + medicine!.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/pill.svg',
-            colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
-          height: 7.h,
+          colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
+          height: 30.h,
         ),
       );
     } else if (medicine!.medicineType == 'Syringe') {
@@ -138,8 +137,8 @@ class MainSection extends StatelessWidget {
         tag: medicine!.medicineName! + medicine!.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/syringe.svg',
-            colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
-          height: 7.h,
+          colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
+          height: 30.h,
         ),
       );
     } else if (medicine!.medicineType == 'Tablet') {
@@ -147,8 +146,8 @@ class MainSection extends StatelessWidget {
         tag: medicine!.medicineName! + medicine!.medicineType!,
         child: SvgPicture.asset(
           'assets/icons/tablet.svg',
-            colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
-          height: 7.h,
+          colorFilter: const ColorFilter.mode(kOtherColor, BlendMode.srcIn),
+          height: 30.h,
         ),
       );
     }
@@ -170,7 +169,7 @@ class MainSection extends StatelessWidget {
       children: [
         //lets try another one
         //okz same here, the same problem, later i will solve that
-        makeIcon(7.h),
+        makeIcon(30.h),
         SizedBox(
           width: 2.w,
         ),
@@ -181,15 +180,17 @@ class MainSection extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: MainInfoTab(
-                    fieldTitle: 'Medicine Name',
-                    fieldInfo: medicine!.medicineName!),
+                  fieldTitle: 'Medicine Name',
+                  fieldInfo: medicine!.medicineName!,
+                ),
               ),
             ),
             MainInfoTab(
-                fieldTitle: 'Dosage',
-                fieldInfo: medicine!.dosage == 0
-                    ? 'Not Specified'
-                    : "${medicine!.dosage} mg"),
+              fieldTitle: 'Dosage',
+              fieldInfo: medicine!.dosage == 0
+                  ? 'Not Specified'
+                  : "${medicine!.dosage} mg",
+            ),
           ],
         )
       ],
@@ -206,22 +207,22 @@ class MainInfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 40.w,
-      height: 10.h,
+      width: 70.w,
+      height: 60.h,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               fieldTitle,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             SizedBox(
               height: 0.3.h,
             ),
             Text(
               fieldInfo,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],
         ),
@@ -277,14 +278,14 @@ class ExtendedInfoTab extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1.h),
             child: Text(
               fieldTitle,
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     color: kTextColor,
                   ),
             ),
           ),
           Text(
             fieldInfo,
-            style: Theme.of(context).textTheme.caption!.copyWith(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: kSecondaryColor,
                 ),
           ),

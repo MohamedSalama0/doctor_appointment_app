@@ -1,7 +1,7 @@
 import "package:doctor_appointment_app/main.dart";
 import "package:doctor_appointment_app/utils/config.dart";
+import "package:doctor_appointment_app/utils/constants.dart";
 import "package:flutter/material.dart";
-
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -57,11 +57,12 @@ class _ProfilePageState extends State<ProfilePage> {
         Expanded(
           flex: 5,
           child: Container(
-            color: Colors.grey[200],
+            color: kScaffoldColor,
             child: Center(
               child: Card(
                 margin: const EdgeInsets.fromLTRB(0, 45, 0, 0),
-                child: SizedBox(
+                child: Container(
+                  color: const Color.fromARGB(255, 226, 226, 226),
                   width: 300,
                   height: 250,
                   child: Padding(
@@ -76,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Divider(
-                          color: Colors.grey[300],
+                          color: Colors.grey[400],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             TextButton(
                               onPressed: () {},
-                              child: Text(
+                              child: const Text(
                                 "Profile",
                                 style: TextStyle(
                                   color: Config.primaryColor,
@@ -115,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             TextButton(
                               onPressed: () {},
-                              child:  Text(
+                              child: const Text(
                                 "History",
                                 style: TextStyle(
                                   color: Config.primaryColor,
@@ -161,13 +162,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   //     });
                                   //   }
                                   // }
-                                    setState(() {
-                                        //redirect to login page
-                                        MyApp.navigatorKey.currentState!
-                                            .pushReplacementNamed('/');
-                                      });
+                                  setState(() {
+                                    //redirect to login page
+                                    MyApp.navigatorKey.currentState!
+                                        .pushReplacementNamed('/');
+                                  });
                                 },
-                                child:  Text(
+                                child: const Text(
                                   "Logout",
                                   style: TextStyle(
                                     color: Config.primaryColor,
